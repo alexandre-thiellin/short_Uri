@@ -1,6 +1,8 @@
 package com.example.shorturi;
 
-import com.example.shorturi.model.ShortUriManager;
+import com.example.shorturi.controller.ShortUriManager;
+import com.example.shorturi.repository.AssociatedUriRepository;
+import com.example.shorturi.repository.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,8 +15,8 @@ class ShortUriApplicationTests {
     private static ShortUriManager shortUriManager;
 
     @BeforeAll
-    public static void initializationOfManager(){
-        shortUriManager = ShortUriManager.getInstance();
+    public static void initializationOfManager(AssociatedUriRepository associatedUriRepository, UserRepository userRepository){
+        shortUriManager = ShortUriManager.getInstance(associatedUriRepository, userRepository);
     }
 
     @Test

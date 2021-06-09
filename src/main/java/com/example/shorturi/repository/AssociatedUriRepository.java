@@ -12,8 +12,8 @@ import java.util.Optional;
  **/
 public interface AssociatedUriRepository extends JpaRepository<AssociatedUri, Long> {
 
-    Optional<AssociatedUri> findByShortUri(String shortUri);
+    Optional<AssociatedUri> findByShortId(String shortUri);
     Optional<AssociatedUri> findByLongUri(String longUri);
-    boolean existsByShortUri(String shortUri);
+    boolean existsByShortId(String shortUri);
     boolean existsByLongUri(String longUri);
 }

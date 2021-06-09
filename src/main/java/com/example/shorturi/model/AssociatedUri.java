@@ -1,26 +1,26 @@
 package com.example.shorturi.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Project ShortUri
  *
  * @author Alexandre
- * Cette classe decrit un objet avec 3 champs, une url courte, une url longue
- * et un nombre de visites associé.
+ * This class describe a pair of uri with their metadatas
  **/
 @Entity
-@Table(name = "short_uris")
+@Table(name = "associated_uri")
 public class AssociatedUri {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @Column
-    private String shortUri;
+    private long user_id;
+
+    @Column
+    private String shortId;
 
     @Column
     private String longUri;
@@ -28,22 +28,39 @@ public class AssociatedUri {
     @Column
     private int number_visits;
 
-    public AssociatedUri() {
+    @Column
+    private String created_at;
 
+    @Column
+    private String updated_at;
+
+    public AssociatedUri() {
     }
 
-    public AssociatedUri(String shortUri, String longUri, int number_visits) {
-        this.shortUri = shortUri;
+    public AssociatedUri(long id, long user_id, String shortId, String longUri, int number_visits, String created_at, String updated_at) {
+        this.id = id;
+        this.user_id = user_id;
+        this.shortId = shortId;
         this.longUri = longUri;
         this.number_visits = number_visits;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
     }
 
-    public String getShortUri() {
-        return shortUri;
+    public long getId() {
+        return id;
     }
 
-    public void setShortUri(String shortUri) {
-        this.shortUri = shortUri;
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getShortId() {
+        return shortId;
+    }
+
+    public void setShortId(String shortUri) {
+        this.shortId = shortUri;
     }
 
     public String getLongUri() {
@@ -60,5 +77,21 @@ public class AssociatedUri {
 
     public void setNumber_visits(int number_visits) {
         this.number_visits = number_visits;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
+
+    public String getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
     }
 }
