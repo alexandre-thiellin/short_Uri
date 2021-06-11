@@ -82,10 +82,13 @@ public class ShortUriManager {
             // plus 7200 seconds (2H) for the time zone of Paris
             Instant now = Instant.now().plusSeconds(7200);
 
-
+            // find the user in the database
             User user = userRepository.findByEmail(((MyUserDetails) authentication.getPrincipal()).getUsername()).get();
 
+            // create the AssociatedUri
             AssociatedUri newAssociatedUri = new AssociatedUri(0, user.getId(), createShortUri(associatedUri.getLongUri()), associatedUri.getLongUri(), 0, now.toString(), now.toString());
+
+            // save in database
             associatedUriRepository.save(newAssociatedUri);
 
             // adding the "sho.rt/" to the shortId to get the short uri
@@ -96,6 +99,7 @@ public class ShortUriManager {
             response = jsonResponse(status, newAssociatedUri);
         } else {
 
+            // find the AssociatedUri in the database
             AssociatedUri retrievedAssociatedUri = associatedUriRepository.findByLongUri(associatedUri.getLongUri()).get();
 
             // adding the "sho.rt/" to the shortId to get the short uri
@@ -116,12 +120,15 @@ public class ShortUriManager {
      **/
     public ResponseEntity<String> getAssociatedUri(String shortId){
 
+        // find the AssociatedUri in the database
         AssociatedUri retrieved = associatedUriRepository.findByShortId(shortId).orElse(null);
 
         if(retrieved != null){
             // incrementing the number of visitors and setting the "timestamp" for the last update
             retrieved.setNumber_visits(retrieved.getNumber_visits() + 1);
             retrieved.setUpdated_at(Instant.now().plusSeconds(7200).toString());
+
+            // save in database
             associatedUriRepository.save(retrieved);
 
             // adding the "sho.rt/" to the shortId to get the short uri
@@ -140,13 +147,18 @@ public class ShortUriManager {
      **/
     public ResponseEntity<String> registerUser(User user){
 
+        // find the list of users from the database
         List<User> users = userRepository.findAll();
+
+        // set the user properties
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles("ROLE_USER");
         user.setActive(true);
 
         if(users.isEmpty()){
+
+            // save the user in database
             userRepository.save(user);
             return ResponseEntity.status(201).body(JsonFormatter.prettyPrint(
                     "{\"timestamp\":\"" + Instant.now().plusSeconds(7200) +"\"," +
@@ -155,6 +167,7 @@ public class ShortUriManager {
         } else if(users.stream().anyMatch(x -> x.getEmail().equals(user.getEmail()))) {
             return ResponseEntity.badRequest().body(JsonFormatter.prettyPrint(jsonError(400, null)));
         } else {
+            // save the user in database
             userRepository.save(user);
             return ResponseEntity.status(201).body(JsonFormatter.prettyPrint(
                     "{\"timestamp\":\"" + Instant.now().plusSeconds(7200) +"\"," +
